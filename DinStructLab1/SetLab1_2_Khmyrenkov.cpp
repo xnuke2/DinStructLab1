@@ -1,23 +1,26 @@
 #include "SetHead.h"
+#include <exception>
+using std::exception;
 
-Element* createEmptySet() {
-	Element* firstElement = NULL;
-	return firstElement;
+Set* createEmptySet() {
+	Set* newSet = new Set;
+	newSet->FirstElement = NULL;
+	return newSet;
 }
 
-bool setIsEmpty(Element* firstElement)
+bool setIsEmpty(Set* set)
 {
-	if (firstElement == NULL) {
+	if (set->FirstElement == NULL) {
 		return true;
 	}
 	return false;
 }
 
-bool setContains(Element* firstElement, int numToFind) {
-	if (setIsEmpty(firstElement)) {
+bool setContains(Set* set, int numToFind) {
+	if (setIsEmpty(set)) {
 		return false;
 	}
-	Element* tmp = firstElement;
+	Element* tmp = set->FirstElement;
 	while (tmp != NULL)
 	{
 		if (tmp->Value == numToFind) {
@@ -28,21 +31,30 @@ bool setContains(Element* firstElement, int numToFind) {
 	return false;
 }
 
-Element* setAddFirst(Element* firstElement, int num) {
-	if (setContains(firstElement, num)) {
-		return firstElement;
+Set* setAddFirst(Set* set, int num) {
+	if (setContains(set, num)) {
+		return set;
 	}
 	Element* newStart = new Element;
 	newStart->Value = num;
-	newStart->Next = firstElement;
-	return newStart;
+	newStart->Next = set->FirstElement;
+	set->FirstElement = newStart;
+	return set;
 }
 
-Element* createRandomSet(int length, int min, int max) {
-	Element* newSet = createEmptySet();
-	if (length <= 0 || max - min < length) {
-		return newSet;
-	}
+Set* createRandomSet(int length, int min, int max) {
+	
+
+	if (length <= 0 )
+		throw exception("length < 0");
+
+	if (max < min) 
+		throw exception("max < min");
+
+	if (max - min < length)
+		throw exception("max - min < length");
+	Set* newSet = createEmptySet();
+
 	for (int i = 0; i < length; i++) {
 		int newNum = rand() % (max - min + 1) + min;
 		while (setContains(newSet, newNum)) {
@@ -50,12 +62,12 @@ Element* createRandomSet(int length, int min, int max) {
 		}
 		newSet = setAddFirst(newSet, newNum);
 	}
+
 	return newSet;
 }
 
-int powerOfSet(Element* firstElement) {
-
-	Element* tmp = firstElement;
+int powerOfSet(Set* set) {
+	Element* tmp = set->FirstElement;
 	int length = 0;
 	while (tmp != NULL)
 	{
@@ -65,42 +77,31 @@ int powerOfSet(Element* firstElement) {
 	return length;
 }
 
-std::string printSet(Element* firstElement, char separator) {
+std::string printSet(Set* set, char separator) {
 	std::string rezult = "";
-	if (setIsEmpty(firstElement)) {
+	if (setIsEmpty(set)) {
 		return rezult;
 	}
-	Element* tmp = firstElement;
+	Element* tmp = set->FirstElement;
 	while (tmp != NULL) {
-		rezult = rezult + std::to_string(tmp->Value);
-		if (tmp->Next != NULL) {
-			rezult = rezult + separator;
-		}
+		rezult = rezult + std::to_string(tmp->Value) + separator;
 		tmp = tmp->Next;
 	}
+	rezult.pop_back();
 	return rezult;
 }
 
-Element* deleteSet(Element* firstElement) {
-	if (setIsEmpty(firstElement)) {
-		return firstElement;
+Set* deleteSet(Set* set) {
+	if (setIsEmpty(set)) {
+		return set;
 	}
-	Element* tmp = firstElement;
-	Element* tmpLast = firstElement;
+	Element* tmp = set->FirstElement->Next;
+	delete set->FirstElement;
+	set->FirstElement = NULL;
 	while (tmp != NULL) {
-		while (tmp->Next != NULL) {
-			tmpLast = tmp;
-			tmp = tmp->Next;
-		}
-		if (tmp != tmpLast) {
-			tmpLast->Next = NULL;
-		}
-		if (tmp == firstElement) {
-			firstElement = NULL;
-		}
+		Element* next = tmp->Next;
 		delete tmp;
-		tmp = NULL;
-		tmpLast = tmp = firstElement;
+		tmp = next;
 	}
-	return firstElement;
+	return set;
 }
