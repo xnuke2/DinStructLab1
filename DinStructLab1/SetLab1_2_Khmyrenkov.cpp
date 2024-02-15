@@ -39,6 +39,7 @@ Element* setAddFirst(Element* firstElement, int num) {
 }
 
 Element* createRandomSet(int length, int min, int max) {
+	srand(time(0)); 
 	Element* newSet = createEmptySet();
 	if (length <= 0 || max - min < length) {
 		return newSet;
@@ -54,7 +55,9 @@ Element* createRandomSet(int length, int min, int max) {
 }
 
 int powerOfSet(Element* firstElement) {
-
+	if (setIsEmpty(firstElement)) {
+		return 0;
+	}
 	Element* tmp = firstElement;
 	int length = 0;
 	while (tmp != NULL)
@@ -73,11 +76,10 @@ std::string printSet(Element* firstElement, char separator) {
 	Element* tmp = firstElement;
 	while (tmp != NULL) {
 		rezult = rezult + std::to_string(tmp->Value);
-		if (tmp->Next != NULL) {
-			rezult = rezult + separator;
-		}
+		rezult = rezult + separator;
 		tmp = tmp->Next;
 	}
+	rezult.pop_back();
 	return rezult;
 }
 
@@ -85,22 +87,13 @@ Element* deleteSet(Element* firstElement) {
 	if (setIsEmpty(firstElement)) {
 		return firstElement;
 	}
-	Element* tmp = firstElement;
-	Element* tmpLast = firstElement;
+	Element* tmp = firstElement->Next;
+	delete firstElement;
+	firstElement = NULL;
 	while (tmp != NULL) {
-		while (tmp->Next != NULL) {
-			tmpLast = tmp;
-			tmp = tmp->Next;
-		}
-		if (tmp != tmpLast) {
-			tmpLast->Next = NULL;
-		}
-		if (tmp == firstElement) {
-			firstElement = NULL;
-		}
+		Element* next = tmp->Next;
 		delete tmp;
-		tmp = NULL;
-		tmpLast = tmp = firstElement;
+		tmp = next;
 	}
 	return firstElement;
 }
