@@ -1,23 +1,26 @@
 #include "SetHead.h"
+#include <exception>
+using std::exception;
 
-Element* createEmptySet() {
-	Element* firstElement = NULL;
-	return firstElement;
+Set* createEmptySet() {
+	Set* newSet = new Set;
+	newSet->FirstElement = NULL;
+	return newSet;
 }
 
-bool setIsEmpty(Element* firstElement)
+bool setIsEmpty(Set* set)
 {
-	if (firstElement == NULL) {
+	if (set->FirstElement == NULL) {
 		return true;
 	}
 	return false;
 }
 
-bool setContains(Element* firstElement, int numToFind) {
-	if (setIsEmpty(firstElement)) {
+bool setContains(Set* set, int numToFind) {
+	if (setIsEmpty(set)) {
 		return false;
 	}
-	Element* tmp = firstElement;
+	Element* tmp = set->FirstElement;
 	while (tmp != NULL)
 	{
 		if (tmp->Value == numToFind) {
@@ -28,14 +31,15 @@ bool setContains(Element* firstElement, int numToFind) {
 	return false;
 }
 
-Element* setAddFirst(Element* firstElement, int num) {
-	if (setContains(firstElement, num)) {
-		return firstElement;
+Set* setAddFirst(Set* set, int num) {
+	if (setContains(set, num)) {
+		return set;
 	}
 	Element* newStart = new Element;
 	newStart->Value = num;
-	newStart->Next = firstElement;
-	return newStart;
+	newStart->Next = set->FirstElement;
+	set->FirstElement = newStart;
+	return set;
 }
 
 Element* createRandomSet(int length, int min, int max) {
@@ -51,6 +55,7 @@ Element* createRandomSet(int length, int min, int max) {
 		}
 		newSet = setAddFirst(newSet, newNum);
 	}
+
 	return newSet;
 }
 
@@ -68,12 +73,12 @@ int powerOfSet(Element* firstElement) {
 	return length;
 }
 
-std::string printSet(Element* firstElement, char separator) {
+std::string printSet(Set* set, char separator) {
 	std::string rezult = "";
-	if (setIsEmpty(firstElement)) {
+	if (setIsEmpty(set)) {
 		return rezult;
 	}
-	Element* tmp = firstElement;
+	Element* tmp = set->FirstElement;
 	while (tmp != NULL) {
 		rezult = rezult + std::to_string(tmp->Value);
 		rezult = rezult + separator;
@@ -83,9 +88,9 @@ std::string printSet(Element* firstElement, char separator) {
 	return rezult;
 }
 
-Element* deleteSet(Element* firstElement) {
-	if (setIsEmpty(firstElement)) {
-		return firstElement;
+Set* deleteSet(Set* set) {
+	if (setIsEmpty(set)) {
+		return set;
 	}
 	Element* tmp = firstElement->Next;
 	delete firstElement;
@@ -95,5 +100,5 @@ Element* deleteSet(Element* firstElement) {
 		delete tmp;
 		tmp = next;
 	}
-	return firstElement;
+	return set;
 }

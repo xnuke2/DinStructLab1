@@ -2,24 +2,28 @@
 #include <iostream>
 #include <string>
 
+
 struct Element
 {
 	int Value;
 	Element* Next;
 };
 
-Element* createEmptySet();
+struct Set {
+	Element* FirstElement;
+};
+Set* createEmptySet();
 
-bool setIsEmpty(Element* firstElement);
+bool setIsEmpty(Set* set);
 
-bool setContains(Element* firstElement, int numToFind);
+bool setContains(Set* set, int numToFind);
 
-Element* setAddFirst(Element* firstElement, int num);
+Set* setAddFirst(Set* set, int num);
 
-Element* createRandomSet(int length, int min, int max);
+Set* createRandomSet(int length, int min, int max);
 
-int powerOfSet(Element* firstElement);
+int powerOfSet(Set* set);
 
-std::string printSet(Element* firstElement, char separator);
+std::string printSet(Set* set, char separator);
 
 Element* deleteSet(Element* firstElement);
