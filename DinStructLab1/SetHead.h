@@ -22,7 +22,6 @@ bool setContains(Element* firstElement, int numToFind);
 Element* setAddFirst(Element* firstElement, int num);
 
 //создание случайного множества
-Element* createRandomSet(int length, int min, int max);
 Element* createRandomSet(int length, int min, int max, string type);
 
 //мощность множества
@@ -47,7 +46,7 @@ Element* CombiningSets(Element* a, Element* b);
 Element* intersectionOfSets(Element* a, Element* b);
 
 //разность двух множеств a-b
-Element* subtractionOfSets(Element* a, Element* b);
+Element* subtraction(Element* a, Element* b);
 
 //симметричная разность двух множеств
-Element* simmetricSubtrOfSets(Element* a, Element* b);
+Element* simmetricSubtraction(Element* a, Element* b);
