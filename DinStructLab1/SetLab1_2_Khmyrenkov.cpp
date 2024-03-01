@@ -1,26 +1,26 @@
 #include "SetHead.h"
-#include <exception>
-using std::exception;
 
-Set* createEmptySet() {
-	Set* newSet = new Set;
-	newSet->FirstElement = NULL;
-	return newSet;
+//создание пустого множества
+Element* createEmptySet() {
+	Element* firstElement = NULL;
+	return firstElement;
 }
 
-bool setIsEmpty(Set* set)
+//проверка пустое ли множество?
+bool setisEmpty(Element* firstElement)
 {
-	if (set->FirstElement == NULL) {
+	if (firstElement == NULL) {
 		return true;
 	}
 	return false;
 }
 
-bool setContains(Set* set, int numToFind) {
-	if (setIsEmpty(set)) {
+//проверка на наличие элемента в множестве
+bool setContains(Element* firstElement, int numToFind) {
+	if (setisEmpty(firstElement)) {
 		return false;
 	}
-	Element* tmp = set->FirstElement;
+	Element* tmp = firstElement;
 	while (tmp != NULL)
 	{
 		if (tmp->Value == numToFind) {
@@ -31,19 +31,19 @@ bool setContains(Set* set, int numToFind) {
 	return false;
 }
 
-Set* setAddFirst(Set* set, int num) {
-	if (setContains(set, num)) {
-		return set;
+//добавление элемента в начало множества
+Element* setAddFirst(Element* firstElement, int num) {
+	if (setContains(firstElement, num)) {
+		return firstElement;
 	}
 	Element* newStart = new Element;
 	newStart->Value = num;
-	newStart->Next = set->FirstElement;
-	set->FirstElement = newStart;
-	return set;
+	newStart->Next = firstElement;
+	return newStart;
 }
 
+//создание случайного множества
 Element* createRandomSet(int length, int min, int max) {
-	srand(time(0)); 
 	Element* newSet = createEmptySet();
 	if (length <= 0 || max - min < length) {
 		return newSet;
@@ -55,14 +55,44 @@ Element* createRandomSet(int length, int min, int max) {
 		}
 		newSet = setAddFirst(newSet, newNum);
 	}
-
 	return newSet;
 }
 
-int powerOfSet(Element* firstElement) {
-	if (setIsEmpty(firstElement)) {
-		return 0;
+Element* createRandomSet(int length, int min, int max, string type) {
+	if (type == "a") {
+		Element* newSet = createEmptySet();
+		if (length <= 0 || max - min < length) {
+			return newSet;
+		}
+		for (int i = 0; i < length; i++) {
+			int newNum = rand() % (max - min + 1) + min;
+			while (setContains(newSet, newNum) || newNum % 10 >= 8) {
+				newNum = rand() % (max - min + 1) + min;
+			}
+			newSet = setAddFirst(newSet, newNum);
+		}
+		return newSet;
 	}
+	if (type == "b") {
+		Element* newSet = createEmptySet();
+		if (length <= 0 || max - min < length) {
+			return newSet;
+		}
+		for (int i = 0; i < length; i++) {
+			int newNum = rand() % (max - min + 1) + min;
+			while (setContains(newSet, newNum) || newNum % 10 <= 3) {
+				newNum = rand() % (max - min + 1) + min;
+			}
+			newSet = setAddFirst(newSet, newNum);
+		}
+		return newSet;
+	}
+}
+
+
+//мощность множества
+int powerOfSet(Element* firstElement) {
+
 	Element* tmp = firstElement;
 	int length = 0;
 	while (tmp != NULL)
@@ -73,32 +103,133 @@ int powerOfSet(Element* firstElement) {
 	return length;
 }
 
-std::string printSet(Set* set, char separator) {
+//вывод элементов множества	
+string printSet(Element* firstElement, char separator) {
 	std::string rezult = "";
-	if (setIsEmpty(set)) {
+	if (setisEmpty(firstElement)) {
 		return rezult;
 	}
-	Element* tmp = set->FirstElement;
+	Element* tmp = firstElement;
 	while (tmp != NULL) {
 		rezult = rezult + std::to_string(tmp->Value);
-		rezult = rezult + separator;
+		if (tmp->Next != NULL) {
+			rezult = rezult + separator;
+		}
 		tmp = tmp->Next;
 	}
-	rezult.pop_back();
 	return rezult;
 }
 
-Set* deleteSet(Set* set) {
-	if (setIsEmpty(set)) {
-		return set;
+//удаление множества
+Element* deleteSet(Element* firstElement) {
+	if (setisEmpty(firstElement)) {
+		return firstElement;
 	}
-	Element* tmp = firstElement->Next;
-	delete firstElement;
+	Element* tmp = firstElement;
+	Element* tmpLast;
+	while (tmp) {
+		tmpLast = tmp;
+		tmp = tmp->Next;
+		delete tmpLast;
+	}
 	firstElement = NULL;
-	while (tmp != NULL) {
-		Element* next = tmp->Next;
-		delete tmp;
-		tmp = next;
+	return firstElement;
+}
+
+//подмножество A-B
+bool subSet(Element* a, Element* b) {
+	if (setisEmpty(a) || setisEmpty(b)) return false;
+	int sizea = powerOfSet(a);
+	if (sizea > powerOfSet(b)) return false;
+	int check = 0;
+	Element* tmpb = b;
+	while (tmpb != NULL) {
+		Element* tmpa = a;
+		Element* tmp = tmpb;
+		check = 0;
+		while (tmpb != NULL && tmpa != NULL && tmpa->Value == tmpb->Value)
+		{
+			check++;
+			tmpb = tmpb->Next;
+			tmpa = tmpa->Next;
+		}
+		if (check == sizea)return true;
+		tmpb = tmp->Next;
 	}
-	return set;
+	return false;
+}
+
+//равенство двух множеств
+bool equalitySet(Element* a, Element* b) {
+	if (subSet(a, b) && subSet(b, a)) return true;
+	return false;
+}
+
+//объединение двух множеств
+Element* CombiningSets(Element* a, Element* b) {
+	if (setisEmpty(a) || setisEmpty(b)) return NULL;
+	Element* tmp = b;
+	Element* tmpRezult = createEmptySet();
+	while (tmp != NULL)
+	{
+		tmpRezult = setAddFirst(tmpRezult, tmp->Value);
+		tmp = tmp->Next;
+	}
+	tmp = a;
+	while (tmp != NULL)
+	{
+		tmpRezult = setAddFirst(tmpRezult, tmp->Value);
+		tmp = tmp->Next;
+	}
+	Element* rezult = createEmptySet();
+	while (tmpRezult != NULL)
+	{
+		rezult = setAddFirst(rezult, tmpRezult->Value);
+		tmpRezult = tmpRezult->Next;
+	}
+	return rezult;
+}
+
+//пересечение двух множеств
+Element* intersectionOfSets(Element* a, Element* b) {
+	if (setisEmpty(a) || setisEmpty(b)) return NULL;
+	Element* tmpRezult = createEmptySet();
+	Element* tmpa = a;
+	while (tmpa != NULL)
+	{
+		if (setContains(b, tmpa->Value)) tmpRezult = setAddFirst(tmpRezult, tmpa->Value);
+		tmpa = tmpa->Next;
+	}
+	Element* rezult = createEmptySet();
+	while (tmpRezult != NULL)
+	{
+		rezult = setAddFirst(rezult, tmpRezult->Value);
+		tmpRezult = tmpRezult->Next;
+	}
+	return rezult;
+}
+
+//разность двух множеств a-b
+Element* subtractionOfSets(Element* a, Element* b) {
+	if (setisEmpty(a) && setisEmpty(b)) return NULL;
+	Element* tmpRezult = createEmptySet();
+	Element* tmpa = a;
+	while (tmpa != NULL)
+	{
+		if (!setContains(b, tmpa->Value))tmpRezult = setAddFirst(tmpRezult, tmpa->Value);
+		tmpa = tmpa->Next;
+	}
+	Element* rezult = createEmptySet();
+	while (tmpRezult != NULL)
+	{
+		rezult = setAddFirst(rezult, tmpRezult->Value);
+		tmpRezult = tmpRezult->Next;
+	}
+	return rezult;
+	return rezult;
+}
+
+//симметричная разность двух множеств
+Element* simmetricSubtrOfSets(Element* a, Element* b) {
+	return subtractionOfSets(CombiningSets(a, b), intersectionOfSets(a, b));
 }
