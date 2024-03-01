@@ -1,26 +1,31 @@
 #include "SetHead.h"
+#include <exception>
+using std::exception;
 
-//создание пустого множества
+
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 Element* createEmptySet() {
 	Element* firstElement = NULL;
 	return firstElement;
 }
 
-//проверка пустое ли множество?
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ?
 bool setisEmpty(Element* firstElement)
+
 {
-	if (firstElement == NULL) {
+	if (set->FirstElement == NULL) {
 		return true;
 	}
 	return false;
 }
 
-//проверка на наличие элемента в множестве
+
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 bool setContains(Element* firstElement, int numToFind) {
 	if (setisEmpty(firstElement)) {
 		return false;
 	}
-	Element* tmp = firstElement;
+	Element* tmp = set->FirstElement;
 	while (tmp != NULL)
 	{
 		if (tmp->Value == numToFind) {
@@ -31,19 +36,22 @@ bool setContains(Element* firstElement, int numToFind) {
 	return false;
 }
 
-//добавление элемента в начало множества
+
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 Element* setAddFirst(Element* firstElement, int num) {
 	if (setContains(firstElement, num)) {
 		return firstElement;
 	}
 	Element* newStart = new Element;
 	newStart->Value = num;
-	newStart->Next = firstElement;
-	return newStart;
+	newStart->Next = set->FirstElement;
+	set->FirstElement = newStart;
+	return set;
 }
 
-//создание случайного множества
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 Element* createRandomSet(int length, int min, int max) {
+	srand(time(0)); 
 	Element* newSet = createEmptySet();
 	if (length <= 0 || max - min < length) {
 		return newSet;
@@ -55,6 +63,7 @@ Element* createRandomSet(int length, int min, int max) {
 		}
 		newSet = setAddFirst(newSet, newNum);
 	}
+
 	return newSet;
 }
 
@@ -90,9 +99,11 @@ Element* createRandomSet(int length, int min, int max, string type ) {
 }
 
 
-//мощность множества
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 int powerOfSet(Element* firstElement) {
-
+	if (setIsEmpty(firstElement)) {
+		return 0;
+	}
 	Element* tmp = firstElement;
 	int length = 0;
 	while (tmp != NULL)
@@ -103,24 +114,26 @@ int powerOfSet(Element* firstElement) {
 	return length;
 }
 
-//вывод элементов множества	
+
+//пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ	
 string printSet(Element* firstElement, char separator) {
 	std::string rezult = "";
 	if (setisEmpty(firstElement)) {
+
 		return rezult;
 	}
-	Element* tmp = firstElement;
+	Element* tmp = set->FirstElement;
 	while (tmp != NULL) {
 		rezult = rezult + std::to_string(tmp->Value);
-		if (tmp->Next != NULL) {
-			rezult = rezult + separator;
-		}
+		rezult = rezult + separator;
 		tmp = tmp->Next;
 	}
+	rezult.pop_back();
 	return rezult;
 }
 
-//удаление множества
+
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 Element* deleteSet(Element* firstElement) {
 	if (setisEmpty(firstElement)) {
 		return firstElement;
@@ -136,7 +149,7 @@ Element* deleteSet(Element* firstElement) {
 	return firstElement;
 }
 
-//подмножество A-B
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ A-B
 bool subSet(Element* a, Element* b) {
 	if (setisEmpty(a) || setisEmpty(b)) return false;
 	int sizea = powerOfSet(a);
@@ -159,13 +172,13 @@ bool subSet(Element* a, Element* b) {
 	return false;
 }
 
-//равенство двух множеств
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 bool equalitySet(Element* a, Element* b) {
 	if (subSet(a, b) && subSet(b, a)) return true;
 	return false;
 }
 
-//объединение двух множеств
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 Element* CombiningSets(Element* a, Element* b) {
 	if (setisEmpty(a) || setisEmpty(b)) return NULL;
 	Element* tmp = b;
@@ -190,7 +203,7 @@ Element* CombiningSets(Element* a, Element* b) {
 	return rezult;
 }
 
-//пересечение двух множеств
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 Element* intersectionOfSets(Element* a, Element* b) {
 	if (setisEmpty(a) || setisEmpty(b)) return NULL;
 	Element* tmpRezult = createEmptySet();
@@ -209,7 +222,7 @@ Element* intersectionOfSets(Element* a, Element* b) {
 	return rezult;
 }
 
-//разность двух множеств a-b
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ a-b
 Element* subtractionOfSets(Element* a, Element* b) {
 	if (setisEmpty(a) && setisEmpty(b)) return NULL;
 	Element* tmpRezult = createEmptySet();
@@ -229,7 +242,7 @@ Element* subtractionOfSets(Element* a, Element* b) {
 	return rezult;
 }
 
-//симметричная разность двух множеств
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 Element* simmetricSubtrOfSets(Element* a, Element* b) {
 	return subtractionOfSets(CombiningSets(a, b), intersectionOfSets(a, b));
 }

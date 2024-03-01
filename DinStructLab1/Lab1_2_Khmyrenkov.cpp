@@ -7,7 +7,7 @@ using std::to_string;
 
 int main()
 {
-    srand(time(0));
+    
     setlocale(LC_ALL, "RUS");
     //Element* set = createRandomSet(rand() % (9-6+1)+6, 0, 20);
     //std::cout <<"Множество создано: "+ printSet(set, ' ') << std::endl;
@@ -49,3 +49,4 @@ int main()
     Element* G = simmetricSubtrOfSets(A, B);
     cout << "Симметричная разность множеств: " + printSet(G, ',') << endl;
 }
+
